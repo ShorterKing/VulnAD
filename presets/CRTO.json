@@ -1,0 +1,17 @@
+{
+    "name": "CRTO",
+    "description": "Certified Red Team Operator exam preparation preset. Covers advanced AD attack techniques including AD CS, RBCD, and Shadow Credentials.",
+    "difficulty_recommended": "Medium",
+    "scenarios": [
+        "Kerberoasting",
+        "ASREPRoast",
+        "ACLAbuse",
+        "Delegation",
+        "ADCS",
+        "DCSync",
+        "RBCD",
+        "ShadowCreds",
+        "GPOAbuse"
+    ],
+    "notes": "Focus on Cobalt Strike tradecraft, AD CS abuse with Certify/Rubeus, and resource-based constrained delegation."
+}

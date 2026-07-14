@@ -1,0 +1,16 @@
+{
+    "name": "OSCP-AD",
+    "description": "Offensive Security Certified Professional AD module preparation. Covers the Active Directory attack chain scenarios most commonly seen in OSCP.",
+    "difficulty_recommended": "Easy",
+    "scenarios": [
+        "Kerberoasting",
+        "ASREPRoast",
+        "ACLAbuse",
+        "Delegation",
+        "DCSync",
+        "GroupNesting",
+        "PasswordExposure",
+        "LAPS"
+    ],
+    "notes": "Practice the full AD kill chain: enum → credential harvesting → lateral movement → domain dominance."
+}

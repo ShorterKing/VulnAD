@@ -1,0 +1,15 @@
+{
+    "name": "CRTP",
+    "description": "Certified Red Team Professional exam preparation preset. Covers core AD attack techniques frequently tested in CRTP.",
+    "difficulty_recommended": "Medium",
+    "scenarios": [
+        "Kerberoasting",
+        "ASREPRoast",
+        "ACLAbuse",
+        "Delegation",
+        "DCSync",
+        "GroupNesting",
+        "LAPS"
+    ],
+    "notes": "Focus on enumeration with PowerView/BloodHound, Kerberos attacks with Rubeus, and ACL abuse chains."
+}

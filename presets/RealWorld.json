@@ -1,0 +1,18 @@
+{
+    "name": "RealWorld",
+    "description": "Real-world enterprise misconfiguration preset. Simulates the types of AD misconfigurations commonly found during actual penetration tests and red team engagements.",
+    "difficulty_recommended": "Hard",
+    "scenarios": [
+        "Kerberoasting",
+        "ASREPRoast",
+        "ACLAbuse",
+        "Delegation",
+        "ADCS",
+        "DCSync",
+        "RBCD",
+        "ShadowCreds",
+        "GPOAbuse",
+        "PasswordExposure"
+    ],
+    "notes": "Best experienced at Hard difficulty. Includes decoy objects and less obvious misconfigurations."
+}

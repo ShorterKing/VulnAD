@@ -1,0 +1,20 @@
+# VulnAD output files
+VulnAD_CheatSheet.md
+VulnAD_CheatSheet.html
+
+# PowerShell
+*.ps1xml
+
+# IDE
+.vscode/
+.idea/
+*.suo
+*.user
+
+# OS
+Thumbs.db
+.DS_Store
+Desktop.ini
+
+# Logs
+*.log
