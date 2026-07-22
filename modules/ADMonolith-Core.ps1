@@ -1,16 +1,16 @@
 #Requires -Modules ActiveDirectory
 <#
 .SYNOPSIS
-    VulnAD Core — Utility functions for the VulnAD lab builder.
+    AD-Monolith Core — Utility functions for the AD-Monolith lab builder.
 
 .DESCRIPTION
-    Provides shared helper functions used by all VulnAD scenario modules:
+    Provides shared helper functions used by all AD-Monolith scenario modules:
     output formatting, AD object creation, password generation, domain info,
     prerequisite checks, and cheatsheet export.
 
 .NOTES
-    Author : VulnAD Project
-    Version: 1.0.0
+    Author : AD-Monolith Project
+    Version: 2.0.0
     License: MIT
 #>
 
@@ -18,7 +18,7 @@
 #  CONSTANTS
 # ───────────────────────────────────────────────────────────
 
-$Script:VulnAD_Version  = '1.0.0'
+$Script:VulnAD_Version  = '2.0.0'
 $Script:VulnAD_OUName   = 'ADMonolith'
 $Script:VulnAD_LogFile  = $null
 
@@ -652,7 +652,15 @@ function Get-VulnPassword {
             'Q29tcGFueTEyMyE=', # Company123!
             'QWRtaW4xMjMh',     # Admin123!
             'TGV0bWVpbjIwMjUh', # Letmein2025!
-            'UXdlcnR5MTIzIQ=='  # Qwerty123!
+            'UXdlcnR5MTIzIQ==', # Qwerty123!
+            'QWNjZXNzMTIzIQ==', # Access123!
+            'TW9uZGF5MTIzIQ==', # Monday123!
+            'VGVtcDEyMzQh',     # Temp1234!
+            'T2ZmaWNlMjAyNSE=', # Office2025!
+            'VXNlcjEyMzQ1IQ==', # User12345!
+            'RG9tYWluMTIzIQ==', # Domain123!
+            'TG9naW4yMDI1IQ==', # Login2025!
+            'U3RhcnQxMjMh'      # Start123!
         )
         Medium = @(
             'U3ByaW5nMjAyNSE=', # Spring2025!
@@ -662,7 +670,15 @@ function Get-VulnPassword {
             'QkBja3VwMjAyNSE=', # B@ckup2025!
             'U1FMX0FkbSFuMjU=', # SQL_Adm!n25
             'TjN0d29yayRlcnYx', # N3twork$erv1
-            'RiFsZVNoYXJlMjU='  # F!leShare25
+            'RiFsZVNoYXJlMjU=', # F!leShare25
+            'RDNmYXVsdCNQd2Q=', # D3fault#Pwd
+            'UHIwamVjdEAyNQ==', # Pr0ject@25
+            'QzBudHJhY3QwciE=', # C0ntract0r!
+            'SW52M250MHJ5JA==', # Inv3nt0ry$
+            'UjNzb3VyY2UjMQ==', # R3source#1
+            'RDNwbDB5QDI1',     # D3pl0y@25
+            'VDNjaFMzcnYh',     # T3chS3rv!
+            'TTFnckB0ZTI1'      # M1gr@te25
         )
         Hard   = @(
             'UXczcnR5QDIwMjV4Wg==', # Qw3rty@2025xZ
@@ -672,7 +688,15 @@ function Get-VulnPassword {
             'QjFnREB0QFMzcnYh',     # B1gD@t@S3rv!
             'Q2wwdWRNIWdSQHRl',     # Cl0udM!gR@te
             'UzNydjNyI1IwMG0x',     # S3rv3r#R00m1
-            'SDNscEQzc2shMjV4'      # H3lpD3sk!25x
+            'SDNscEQzc2shMjV4',     # H3lpD3sk!25x
+            'cFI3JHhLMm1OcSE=',     # pR7$xK2mNq!
+            'Wnc0QGNCOGZZZSQ=',     # Zw4@cB8fYe$
+            'bVQ2I2hKOXBMeCE=',     # mT6#hJ9pLx!
+            'Yk4zJHJGNXdRYUA=',     # bN3$rF5wQa@
+            'a1k4IWdWMmRYeiM=',     # kY8!gV2dXz#
+            'c1c1QHBMN2NSdCQ=',     # sW5@pL7cRt$
+            'akg0I25NNmJVZSE=',     # jH4#nM6bUe!
+            'dkQ5JHRLM2ZBd0A='      # vD9$tK3fAw@
         )
     }
 
@@ -697,20 +721,41 @@ function Get-VulnScenarioList {
     param()
 
     return [ordered]@{
+        # ── Credential Attacks ──
         Kerberoasting    = @{ Index =  1; Name = 'Kerberoasting';          Objects = '3 users';     MitreID = 'T1558.003' }
         ASREPRoast       = @{ Index =  2; Name = 'AS-REP Roasting';       Objects = '2 users';     MitreID = 'T1558.004' }
-        ACLAbuse         = @{ Index =  3; Name = 'ACL Abuse Chains';      Objects = '8 ACEs';      MitreID = 'T1222.001' }
-        Delegation       = @{ Index =  4; Name = 'Delegation Attacks';    Objects = '3 accounts';  MitreID = 'T1550.003' }
-        ADCS             = @{ Index =  5; Name = 'AD CS Abuse (ESC1-8)';  Objects = '5 templates'; MitreID = 'T1649' }
-        GPOAbuse         = @{ Index =  6; Name = 'GPO Abuse';             Objects = '2 GPOs';      MitreID = 'T1484.001' }
-        LAPS             = @{ Index =  7; Name = 'LAPS Misconfiguration'; Objects = '1 policy';    MitreID = 'T1552.006' }
-        DCSync           = @{ Index =  8; Name = 'DCSync Rights';         Objects = '1 user';      MitreID = 'T1003.006' }
-        ShadowCreds      = @{ Index =  9; Name = 'Shadow Credentials';   Objects = '2 users';     MitreID = 'T1556' }
+        PasswordExposure = @{ Index =  3; Name = 'Password Exposure';     Objects = '3 users';     MitreID = 'T1552.001' }
+        PasswordSpraying = @{ Index =  4; Name = 'Password Spraying';     Objects = '10 users';    MitreID = 'T1110.003' }
+        GPPPasswords     = @{ Index =  5; Name = 'GPP Passwords';         Objects = '1 GPO';       MitreID = 'T1552.006' }
+        WriteSPN         = @{ Index =  6; Name = 'Targeted Kerberoast';   Objects = '2 users';     MitreID = 'T1134.001' }
+        # ── Privilege Escalation ──
+        ACLAbuse         = @{ Index =  7; Name = 'ACL Abuse Chains';      Objects = '8 ACEs';      MitreID = 'T1222.001' }
+        GroupNesting     = @{ Index =  8; Name = 'Nested Group Privesc';  Objects = '4 groups';    MitreID = 'T1078.002' }
+        Delegation       = @{ Index =  9; Name = 'Delegation Attacks';    Objects = '3 accounts';  MitreID = 'T1550.003' }
         RBCD             = @{ Index = 10; Name = 'RBCD Abuse';            Objects = '2 accounts';  MitreID = 'T1550.003' }
-        PasswordExposure = @{ Index = 11; Name = 'Password Exposure';     Objects = '3 users';     MitreID = 'T1552.001' }
-        GroupNesting     = @{ Index = 12; Name = 'Nested Group Privesc';  Objects = '4 groups';    MitreID = 'T1078.002' }
-        AdminSDHolder    = @{ Index = 13; Name = 'AdminSDHolder Abuse';   Objects = '1 config';    MitreID = 'T1098' }
-        DNSAdmins        = @{ Index = 14; Name = 'DNS Admins Abuse';      Objects = '1 user';      MitreID = 'T1574' }
+        DCSync           = @{ Index = 11; Name = 'DCSync Rights';         Objects = '1 user';      MitreID = 'T1003.006' }
+        gMSA             = @{ Index = 12; Name = 'gMSA Password Read';    Objects = '1 gMSA';      MitreID = 'T1555' }
+        # ── Built-in Group Abuse ──
+        BackupOperators  = @{ Index = 13; Name = 'Backup Operators';      Objects = '1 user';      MitreID = 'T1003.003' }
+        ServerOperators  = @{ Index = 14; Name = 'Server Operators';      Objects = '1 user';      MitreID = 'T1543.003' }
+        AccountOperators = @{ Index = 15; Name = 'Account Operators';     Objects = '2 users';     MitreID = 'T1098.001' }
+        PrintOperators   = @{ Index = 16; Name = 'Print Operators';       Objects = '1 user';      MitreID = 'T1068' }
+        DNSAdmins        = @{ Index = 17; Name = 'DNS Admins Abuse';      Objects = '1 user';      MitreID = 'T1574' }
+        # ── Infrastructure Attacks ──
+        ADCS             = @{ Index = 18; Name = 'AD CS Abuse (ESC1-8)';  Objects = '5 templates'; MitreID = 'T1649' }
+        GPOAbuse         = @{ Index = 19; Name = 'GPO Abuse';             Objects = '2 GPOs';      MitreID = 'T1484.001' }
+        LAPS             = @{ Index = 20; Name = 'LAPS Misconfiguration'; Objects = '1 policy';    MitreID = 'T1552.006' }
+        ShadowCreds      = @{ Index = 21; Name = 'Shadow Credentials';    Objects = '2 users';     MitreID = 'T1556' }
+        ADIDNS           = @{ Index = 22; Name = 'ADIDNS Injection';      Objects = '1 user';      MitreID = 'T1557.001' }
+        MachineQuota     = @{ Index = 23; Name = 'Machine Account Quota'; Objects = '1 config';    MitreID = 'T1136.002' }
+        # ── Persistence & Misc ──
+        AdminSDHolder    = @{ Index = 24; Name = 'AdminSDHolder Abuse';   Objects = '1 config';    MitreID = 'T1098' }
+        CoercionSetup    = @{ Index = 25; Name = 'Auth Coercion Setup';   Objects = '2 accounts';  MitreID = 'T1187' }
+        NTLMDowngrade    = @{ Index = 26; Name = 'NTLM Downgrade';        Objects = '4 settings';  MitreID = 'T1557.001' }
+        DPAPIExposure    = @{ Index = 27; Name = 'DPAPI Exposure';        Objects = '1 task';      MitreID = 'T1555.004' }
+        PreWin2000       = @{ Index = 28; Name = 'Pre-Win2000 Access';    Objects = '1 user';      MitreID = 'T1087.002' }
+        ServiceAbuse     = @{ Index = 29; Name = 'Weak Service Perms';    Objects = '1 service';   MitreID = 'T1574.011' }
+        ScheduledTask    = @{ Index = 30; Name = 'Scheduled Task Abuse';  Objects = '1 task';      MitreID = 'T1053.005' }
     }
 }
 

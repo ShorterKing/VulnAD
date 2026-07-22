@@ -10,8 +10,8 @@
 
 <p align="center">
   <a href="#-quick-start"><img src="https://img.shields.io/badge/Quick_Start-▶-82e05e?style=for-the-badge" alt="Quick Start"></a>
-  <a href="#-scenarios"><img src="https://img.shields.io/badge/Scenarios-14-ff6b6b?style=for-the-badge" alt="14 Scenarios"></a>
-  <a href="#-exam-presets"><img src="https://img.shields.io/badge/Presets-CRTP_|_CRTO_|_OSCP-58a6ff?style=for-the-badge" alt="Exam Presets"></a>
+  <a href="#-scenarios"><img src="https://img.shields.io/badge/Scenarios-30-ff6b6b?style=for-the-badge" alt="30 Scenarios"></a>
+  <a href="#-exam-presets"><img src="https://img.shields.io/badge/Presets-CRTP_|_CRTO_|_OSCP_|_PNPT-58a6ff?style=for-the-badge" alt="Exam Presets"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-d29922?style=for-the-badge" alt="MIT License"></a>
 </p>
 
@@ -33,16 +33,17 @@
 
 ## 🤔 Why AD-Monolith?
 
-| | **AD-Monolith** | GOAD | DetectionLab | PurpleCloud |
-|---|---|---|---|---|
-| **VMs Required** | **1** | 5+ | 4+ | Azure VMs |
-| **RAM Needed** | **4 GB** | 24+ GB | 16+ GB | Cloud $$ |
-| **Setup Time** | **< 2 min** | 1-2 hours | 1+ hour | 30+ min |
-| **Dependencies** | **None** | Vagrant, Ansible | Packer, Terraform | Terraform, Azure |
-| **Exam Presets** | **CRTP, CRTO, OSCP** | ✗ | ✗ | ✗ |
-| **Attack Cheatsheet** | **Auto-generated** | ✗ | ✗ | ✗ |
-| **Difficulty Levels** | **Easy/Medium/Hard** | Fixed | Fixed | Fixed |
-| **One-Command Cleanup** | **✓** | Manual | Manual | terraform destroy |
+| | **AD-Monolith** | GOAD | BadBlood | DetectionLab | PurpleCloud |
+|---|---|---|---|---|---|
+| **VMs Required** | **1** | 5+ | 1 | 4+ | Azure VMs |
+| **RAM Needed** | **4 GB** | 24+ GB | 4 GB | 16+ GB | Cloud $$ |
+| **Setup Time** | **< 2 min** | 1-2 hours | 15 min | 1+ hour | 30+ min |
+| **Dependencies** | **None** | Vagrant, Ansible | None | Packer, Terraform | Terraform, Azure |
+| **Scenarios Deployed** | **30** | 15 | Random data | Logging focus | Cloud focus |
+| **Exam Presets** | **CRTP, CRTO, OSCP, PNPT** | ✗ | ✗ | ✗ | ✗ |
+| **Attack Cheatsheet** | **Auto-generated** | ✗ | ✗ | ✗ | ✗ |
+| **Difficulty Levels** | **Easy/Medium/Hard** | Fixed | Fixed | Fixed | Fixed |
+| **One-Command Cleanup** | **✓** | Manual | Manual | Manual | terraform destroy |
 
 <br>
 
@@ -89,130 +90,108 @@ Install-ADDSForest -DomainName "vulnlab.local" -InstallDns -Force
 
 ## 🎯 Scenarios
 
-AD-Monolith deploys **14 attack scenarios** covering the most critical Active Directory attack techniques:
+AD-Monolith deploys **30 attack scenarios** covering the full Active Directory attack surface:
 
-### Credential Attacks
+### 🔑 Credential & Password Attacks
 | # | Scenario | Description | MITRE |
 |---|----------|-------------|-------|
 | 1 | **Kerberoasting** | Service accounts with SPNs and crackable passwords | [T1558.003](https://attack.mitre.org/techniques/T1558/003/) |
 | 2 | **AS-REP Roasting** | Users with Kerberos pre-authentication disabled | [T1558.004](https://attack.mitre.org/techniques/T1558/004/) |
-| 11 | **Password Exposure** | Credentials stored in AD description/attribute fields | [T1552.001](https://attack.mitre.org/techniques/T1552/001/) |
+| 3 | **Password Exposure** | Credentials stored in AD description/attribute fields | [T1552.001](https://attack.mitre.org/techniques/T1552/001/) |
+| 4 | **Password Spraying** | Weak policy + identical shared password pattern across accounts | [T1110.003](https://attack.mitre.org/techniques/T1110/003/) |
+| 5 | **GPP Passwords** | SYSVOL Group Policy Preferences XML containing cpassword | [T1552.006](https://attack.mitre.org/techniques/T1552/006/) |
+| 6 | **Targeted Kerberoast** | WriteSPN permission over target accounts to enable Kerberoasting | [T1134.001](https://attack.mitre.org/techniques/T1134/001/) |
 
-### Privilege Escalation
+### 📈 Privilege Escalation
 | # | Scenario | Description | MITRE |
 |---|----------|-------------|-------|
-| 3 | **ACL Abuse Chains** | Misconfigured ACLs creating privilege escalation paths | [T1222.001](https://attack.mitre.org/techniques/T1222/001/) |
-| 12 | **Nested Group Privesc** | Group nesting chains leading to Domain Admins | [T1078.002](https://attack.mitre.org/techniques/T1078/002/) |
-| 14 | **DNS Admins Abuse** | DNS Admins group membership for DLL injection | [T1574](https://attack.mitre.org/techniques/T1574/) |
-
-### Delegation Attacks
-| # | Scenario | Description | MITRE |
-|---|----------|-------------|-------|
-| 4 | **Delegation Attacks** | Unconstrained, constrained, and protocol transition delegation | [T1550.003](https://attack.mitre.org/techniques/T1550/003/) |
+| 7 | **ACL Abuse Chains** | Misconfigured ACLs creating multi-hop privilege escalation paths | [T1222.001](https://attack.mitre.org/techniques/T1222/001/) |
+| 8 | **Nested Group Privesc** | Deep group nesting chains leading to Domain Admins | [T1078.002](https://attack.mitre.org/techniques/T1078/002/) |
+| 9 | **Delegation Attacks** | Unconstrained, constrained, and protocol transition delegation | [T1550.003](https://attack.mitre.org/techniques/T1550/003/) |
 | 10 | **RBCD Abuse** | Resource-Based Constrained Delegation misconfiguration | [T1550.003](https://attack.mitre.org/techniques/T1550/003/) |
+| 11 | **DCSync Rights** | User with directory replication rights for hash extraction | [T1003.006](https://attack.mitre.org/techniques/T1003/006/) |
+| 12 | **gMSA Password Read** | Group Managed Service Account password readable by low-priv users | [T1555](https://attack.mitre.org/techniques/T1555/) |
 
-### Certificate & Credential Abuse
+### 🛡️ Built-in Privileged Groups Abuse
 | # | Scenario | Description | MITRE |
 |---|----------|-------------|-------|
-| 5 | **AD CS Abuse (ESC1-8)** | Vulnerable certificate templates and CA misconfigurations | [T1649](https://attack.mitre.org/techniques/T1649/) |
-| 9 | **Shadow Credentials** | Writable msDS-KeyCredentialLink for certificate-based auth | [T1556](https://attack.mitre.org/techniques/T1556/) |
+| 13 | **Backup Operators** | Group membership granting NTDS.dit / SYSTEM hive extraction | [T1003.003](https://attack.mitre.org/techniques/T1003/003/) |
+| 14 | **Server Operators** | Group membership allowing DC service modification | [T1543.003](https://attack.mitre.org/techniques/T1543/003/) |
+| 15 | **Account Operators** | Group membership permitting password resets on non-protected accounts | [T1098.001](https://attack.mitre.org/techniques/T1098/001/) |
+| 16 | **Print Operators** | Group membership providing SeLoadDriverPrivilege for kernel exploit | [T1068](https://attack.mitre.org/techniques/T1068/) |
+| 17 | **DNS Admins Abuse** | Group membership allowing DNS service plugin DLL injection | [T1574](https://attack.mitre.org/techniques/T1574/) |
 
-### Domain Dominance
+### 🏗️ Infrastructure & Certificate Misconfigurations
 | # | Scenario | Description | MITRE |
 |---|----------|-------------|-------|
-| 6 | **GPO Abuse** | Writable Group Policy Objects for code execution | [T1484.001](https://attack.mitre.org/techniques/T1484/001/) |
-| 7 | **LAPS Misconfiguration** | Local admin password readable by unauthorized groups | [T1552.006](https://attack.mitre.org/techniques/T1552/006/) |
-| 8 | **DCSync Rights** | User with directory replication rights for hash extraction | [T1003.006](https://attack.mitre.org/techniques/T1003/006/) |
-| 13 | **AdminSDHolder Abuse** | Persistent ACL propagation to all protected groups | [T1098](https://attack.mitre.org/techniques/T1098/) |
+| 18 | **AD CS Abuse (ESC1-8)** | Vulnerable certificate templates and CA misconfigurations | [T1649](https://attack.mitre.org/techniques/T1649/) |
+| 19 | **GPO Abuse** | Writable Group Policy Objects for code execution | [T1484.001](https://attack.mitre.org/techniques/T1484/001/) |
+| 20 | **LAPS Misconfiguration** | Local admin password readable by unauthorized groups | [T1552.006](https://attack.mitre.org/techniques/T1552/006/) |
+| 21 | **Shadow Credentials** | Writable msDS-KeyCredentialLink for certificate-based auth | [T1556](https://attack.mitre.org/techniques/T1556/) |
+| 22 | **ADIDNS Injection** | Writable Active Directory Integrated DNS zone for record injection | [T1557.001](https://attack.mitre.org/techniques/T1557/001/) |
+| 23 | **Machine Account Quota** | ms-DS-MachineAccountQuota set allowing computer account creation | [T1136.002](https://attack.mitre.org/techniques/T1136/002/) |
+
+### 🔄 Persistence & Protocol Abuse
+| # | Scenario | Description | MITRE |
+|---|----------|-------------|-------|
+| 24 | **AdminSDHolder Abuse** | Persistent ACL propagation to all protected groups | [T1098](https://attack.mitre.org/techniques/T1098/) |
+| 25 | **Auth Coercion Setup** | Active Print Spooler / RPC services for PetitPotam / PrinterBug | [T1187](https://attack.mitre.org/techniques/T1187/) |
+| 26 | **NTLM Downgrade** | LmCompatibilityLevel configured allowing NTLMv1 fallback | [T1557.001](https://attack.mitre.org/techniques/T1557/001/) |
+| 27 | **DPAPI Exposure** | Stored DPAPI secrets decryptable via DC DPAPI Backup Key | [T1555.004](https://attack.mitre.org/techniques/T1555/004/) |
+| 28 | **Pre-Win2000 Access** | Pre-Windows 2000 Compatible Access group enabling anonymous LDAP | [T1087.002](https://attack.mitre.org/techniques/T1087/002/) |
+| 29 | **Weak Service Perms** | Service running as SYSTEM with writable binary/folder ACLs | [T1574.011](https://attack.mitre.org/techniques/T1574/011/) |
+| 30 | **Scheduled Task Abuse** | Scheduled task running privileged script with permissive file ACLs | [T1053.005](https://attack.mitre.org/techniques/T1053/005/) |
 
 <br>
 
 ## 📋 Exam Presets
 
-Don't know which scenarios to pick? Use a preset tailored for your certification:
+Tailored preset configurations matching major pentesting certification exams:
 
 ```powershell
-# Certified Red Team Professional
+# Certified Red Team Professional (CRTP)
 .\Deploy-ADMonolith.ps1 -Preset CRTP -Difficulty Medium -Force
 
-# Certified Red Team Operator
+# Certified Red Team Operator (CRTO)
 .\Deploy-ADMonolith.ps1 -Preset CRTO -Difficulty Medium -Force
 
 # OSCP Active Directory
 .\Deploy-ADMonolith.ps1 -Preset OSCP -Difficulty Easy -Force
 
-# Real-World Enterprise (hardest)
+# Practical Network Penetration Tester (PNPT)
+.\Deploy-ADMonolith.ps1 -Preset PNPT -Difficulty Easy -Force
+
+# Real-World Enterprise (All 30 Scenarios)
 .\Deploy-ADMonolith.ps1 -Preset RealWorld -Difficulty Hard -Force
 ```
 
-| Preset | Scenarios | Best For |
-|--------|-----------|----------|
-| **CRTP** | Kerberoasting, AS-REP, ACL Abuse, Delegation, DCSync, Group Nesting, LAPS | Pentester Academy CRTP |
-| **CRTO** | All CRTP + AD CS, RBCD, Shadow Creds, GPO Abuse | Zero-Point Security CRTO |
-| **OSCP** | Core AD attacks + Password Exposure | OffSec OSCP AD module |
-| **RealWorld** | 10 scenarios simulating enterprise misconfigs | Experienced pentesters |
+| Preset | Scenarios Deployed | Target Certification |
+|--------|--------------------|----------------------|
+| **CRTP** | Kerberoasting, AS-REP, ACL Abuse, Delegation, DCSync, Group Nesting, LAPS, Backup Operators, gMSA, Password Spraying | Pentester Academy CRTP |
+| **CRTO** | Kerberoasting, AS-REP, ACL Abuse, Delegation, ADCS, DCSync, RBCD, Shadow Creds, GPO Abuse, Backup/Server Operators, Coercion, GPP Passwords, MAQ | Zero-Point Security CRTO |
+| **OSCP** | Kerberoasting, AS-REP, ACL Abuse, Delegation, DCSync, Group Nesting, Password Exposure, LAPS, Password Spraying, GPP Passwords, MAQ | OffSec OSCP |
+| **PNPT** | Kerberoasting, AS-REP, Password Spraying, GPP Passwords, ACL Abuse, DCSync, MAQ, RBCD | TCM Security PNPT |
+| **RealWorld** | All 30 Scenarios | Full Penetration Testing / Red Team Range |
 
 <br>
 
-## 🎮 Usage
+## 🎛️ Difficulty Levels
 
-### Interactive Mode (Recommended for First-Timers)
-
-```powershell
-.\Deploy-ADMonolith.ps1
-```
-
-Launches an interactive menu where you can:
-1. Select individual scenarios or presets
-2. Choose a difficulty level
-3. Review a deployment summary before confirming
-
-### CLI Mode (Scripted / Automated)
-
-```powershell
-# Deploy specific scenarios
-.\Deploy-ADMonolith.ps1 -Scenario Kerberoasting,ACLAbuse,DCSync -Difficulty Hard -Force
-
-# Deploy all scenarios
-.\Deploy-ADMonolith.ps1 -Scenario All -Difficulty Medium -Force
-```
-
-### Validate Deployment
-
-```powershell
-.\Deploy-ADMonolith.ps1 -Validate
-```
-
-```
-[✓] Kerberoasting    — Found 3 Kerberoastable SPNs           PASS
-[✓] AS-REP Roast     — Found 2 accounts, preauth disabled    PASS
-[✓] ACL Chain        — Path to DA confirmed (3 hops)          PASS
-[✗] AD CS ESC1       — CA not installed on this DC            FAIL
-    └── Fix: Install ADCS role, then rerun Deploy-ADCS
-[✓] DCSync           — Replication rights confirmed            PASS
-
-Result: 13/14 scenarios validated (1 needs manual fix)
-```
-
-### Cleanup
-
-```powershell
-# Remove everything AD-Monolith created
-.\Deploy-ADMonolith.ps1 -Cleanup
-
-# Skip confirmation
-.\Deploy-ADMonolith.ps1 -Cleanup -Force
-```
+| Level | Passwords | Misconfiguration Subtlety | Environment Complexity |
+|-------|-----------|---------------------------|------------------------|
+| **Easy** | Common passwords (e.g., `Password123!`) | Direct, clear attack paths | Clean environment |
+| **Medium** | Moderate complexity (e.g., `Spring2025!`) | Realistic enterprise misconfigurations | Standard noise |
+| **Hard** | Complex passwords (e.g., `Qw3rty@2025xZ`) | Multi-hop chains, decoy objects | Complex enterprise noise |
 
 <br>
 
-## 📊 Difficulty Levels
+## 📄 Auto-Generated Cheatsheet
 
-| Level | Passwords | Misconfigurations | Extras |
-|-------|-----------|-------------------|--------|
-| **Easy** | Very common (e.g., Password123...) | Obvious, direct paths to DA | Clean environment |
-| **Medium** | Moderate (e.g., Spring2025...) | Realistic corporate misconfigs | Standard noise |
-| **Hard** | Complex (e.g., Qw3rty...) | Subtle, multi-step required | Decoy objects, rabbit holes |
+Every deployment automatically generates an interactive HTML and Markdown cheatsheet saved to your project folder containing:
+- Exact account usernames and passwords
+- Custom attack commands tailored to your domain name and IP
+- ASCII visual attack path flowcharts
+- MITRE ATT&CK mappings
 
 <br>
 
@@ -220,117 +199,55 @@ Result: 13/14 scenarios validated (1 needs manual fix)
 
 ```
 AD-Monolith/
-├── Deploy-ADMonolith.ps1              # Main entry point
-├── modules/
-│   ├── ADMonolith-Core.ps1            # Core utilities & helpers
-│   ├── Deploy-Kerberoasting.ps1   # Kerberoasting scenario
-│   ├── Deploy-ASREPRoast.ps1      # AS-REP Roasting scenario
-│   ├── Deploy-ACLAbuse.ps1        # ACL abuse chains
-│   ├── Deploy-Delegation.ps1      # Delegation attacks
-│   ├── Deploy-ADCS.ps1            # AD Certificate Services abuse
-│   ├── Deploy-GPOAbuse.ps1        # GPO abuse
-│   ├── Deploy-LAPS.ps1            # LAPS misconfiguration
-│   ├── Deploy-DCSync.ps1          # DCSync rights
-│   ├── Deploy-ShadowCreds.ps1     # Shadow Credentials
-│   ├── Deploy-RBCD.ps1            # Resource-Based Constrained Delegation
-│   ├── Deploy-PasswordExposure.ps1# Password exposure
-│   ├── Deploy-GroupNesting.ps1    # Nested group privilege escalation
-│   ├── Deploy-AdminSDHolder.ps1   # AdminSDHolder persistence
-│   └── Deploy-DNSAdmins.ps1       # DNS Admins abuse
-├── presets/
-│   ├── CRTP.json                  # CRTP exam preset
-│   ├── CRTO.json                  # CRTO exam preset
-│   ├── OSCP-AD.json               # OSCP AD preset
-│   └── RealWorld.json             # Real-world enterprise preset
-├── assets/                        # Images for README
+├── Deploy-ADMonolith.ps1          # Main orchestrator script
+├── README.md                      # Documentation
 ├── LICENSE                        # MIT License
-└── README.md                      # You are here
+├── assets/
+│   └── banner.png                 # Header banner image
+├── modules/                       # 30 Attack scenario modules
+│   ├── ADMonolith-Core.ps1        # Shared helper library & scenario registry
+│   ├── Deploy-Kerberoasting.ps1
+│   ├── Deploy-ASREPRoast.ps1
+│   ├── Deploy-PasswordExposure.ps1
+│   ├── Deploy-PasswordSpraying.ps1
+│   ├── Deploy-GPPPasswords.ps1
+│   ├── Deploy-WriteSPN.ps1
+│   ├── Deploy-ACLAbuse.ps1
+│   ├── Deploy-GroupNesting.ps1
+│   ├── Deploy-Delegation.ps1
+│   ├── Deploy-RBCD.ps1
+│   ├── Deploy-DCSync.ps1
+│   ├── Deploy-gMSA.ps1
+│   ├── Deploy-BackupOperators.ps1
+│   ├── Deploy-ServerOperators.ps1
+│   ├── Deploy-AccountOperators.ps1
+│   ├── Deploy-PrintOperators.ps1
+│   ├── Deploy-DNSAdmins.ps1
+│   ├── Deploy-ADCS.ps1
+│   ├── Deploy-GPOAbuse.ps1
+│   ├── Deploy-LAPS.ps1
+│   ├── Deploy-ShadowCreds.ps1
+│   ├── Deploy-ADIDNS.ps1
+│   ├── Deploy-MachineQuota.ps1
+│   ├── Deploy-AdminSDHolder.ps1
+│   ├── Deploy-CoercionSetup.ps1
+│   ├── Deploy-NTLMDowngrade.ps1
+│   ├── Deploy-DPAPIExposure.ps1
+│   ├── Deploy-PreWin2000.ps1
+│   ├── Deploy-ServiceAbuse.ps1
+│   └── Deploy-ScheduledTaskAbuse.ps1
+└── presets/                       # Pre-configured exam presets
+    ├── CRTP.json
+    ├── CRTO.json
+    ├── OSCP.json
+    ├── PNPT.json
+    └── RealWorld.json
 ```
 
 <br>
 
-## 🔒 Auto-Generated Attack Cheatsheet
+## ⚖️ License & Disclaimer
 
-After deployment, AD-Monolith automatically generates a **complete attack cheatsheet** with:
+Distributed under the **MIT License**.
 
-- ✅ Exact commands for each attack (Impacket, Rubeus, Certipy, PowerView, etc.)
-- ✅ Created usernames, passwords, and SPNs
-- ✅ Step-by-step attack paths to Domain Admin
-- ✅ MITRE ATT&CK mapping for every technique
-- ✅ Beautiful HTML version you can open in your browser
-
-```
-📄 AD_Monolith_CheatSheet.md    ← Markdown for your notes
-🌐 AD_Monolith_CheatSheet.html  ← Open in browser for a styled view
-```
-
-<br>
-
-## 🛡️ Security Notice
-
-> **⚠️ WARNING: This tool creates intentionally vulnerable Active Directory configurations.**
-
-- **ONLY** run in isolated lab environments
-- **NEVER** run on production domain controllers
-- **ALWAYS** clean up with `.\Deploy-ADMonolith.ps1 -Cleanup` when done
-- This tool is intended for **authorized security testing and education only**
-
-<br>
-
-## 🤝 Contributing
-
-Contributions are welcome! Here's how you can help:
-
-1. **New Scenarios** — Add new attack technique modules
-2. **Bug Fixes** — Find and fix issues
-3. **Difficulty Tuning** — Help calibrate difficulty levels
-4. **Documentation** — Improve the cheatsheet and docs
-
-```bash
-# Fork the repo, create a branch, make changes, submit a PR
-git checkout -b feature/new-scenario
-```
-
-### Adding a New Scenario
-
-1. Create `modules/Deploy-YourScenario.ps1` following the existing module pattern
-2. Implement `Deploy-`, `Remove-`, and `Test-` functions
-3. Add the scenario to `Get-VulnScenarioList` in `ADMonolith-Core.ps1`
-4. Add the scenario key to `$AllScenarioKeys` and `$ScenarioFunctions` in `Deploy-ADMonolith.ps1`
-5. Submit a PR!
-
-<br>
-
-## 📜 License
-
-This project is licensed under the [MIT License](LICENSE).
-
-<br>
-
-## 🙏 Acknowledgements
-
-Built with inspiration from these amazing projects:
-
-- [GOAD](https://github.com/Orange-Cyberdefense/GOAD) — Game of Active Directory
-- [BadBlood](https://github.com/davidprowe/BadBlood) — AD filling tool
-- [ADModule](https://github.com/samratashok/ADModule) — AD PowerShell module
-- [Vulnerable-AD](https://github.com/safebuffer/vulnerable-AD) — Create vulnerable AD environment
-
-And the incredible work of the offensive security community:
-[BloodHound](https://github.com/BloodHoundAD/BloodHound) •
-[Impacket](https://github.com/fortra/impacket) •
-[Rubeus](https://github.com/GhostPack/Rubeus) •
-[Certipy](https://github.com/ly4k/Certipy) •
-[PowerView](https://github.com/PowerShellMafia/PowerSploit)
-
----
-
-<p align="center">
-  <strong>⭐ If AD-Monolith saved you from setting up 5 VMs, consider starring this repo!</strong>
-</p>
-
-<p align="center">
-  <a href="https://github.com/ShorterKing/AD-Monolith/issues">Report Bug</a> •
-  <a href="https://github.com/ShorterKing/AD-Monolith/issues">Request Feature</a>
-</p>
-
+> **WARNING:** This tool is designed strictly for educational purposes, authorized security testing, and cyber range development. Never deploy on production networks without explicit written authorization.

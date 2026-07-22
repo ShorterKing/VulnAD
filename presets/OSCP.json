@@ -1,0 +1,17 @@
+{
+  "name": "OSCP Active Directory Preset",
+  "description": "AD-focused scenarios relevant to OffSec Certified Professional (OSCP) exam",
+  "scenarios": [
+    "Kerberoasting",
+    "ASREPRoast",
+    "ACLAbuse",
+    "Delegation",
+    "DCSync",
+    "GroupNesting",
+    "PasswordExposure",
+    "LAPS",
+    "PasswordSpraying",
+    "GPPPasswords",
+    "MachineQuota"
+  ]
+}

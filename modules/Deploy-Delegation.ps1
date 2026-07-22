@@ -97,13 +97,13 @@ function Deploy-Delegation {
         # Enable unconstrained delegation
         $webComputer = Get-ADComputer -Identity 'WEB01' -ErrorAction Stop
         Set-ADComputer -Identity $webComputer -TrustedForDelegation $true
-        $createdObjects.Add("Computer: WEB01$ (Unconstrained Delegation)")
+        $createdObjects.Add("Computer: WEB01`$ (Unconstrained Delegation)")
 
-        Write-VulnResult -Name 'WEB01$' -Detail 'Created with Unconstrained Delegation enabled' -Success $true
+        Write-VulnResult -Name 'WEB01`$' -Detail 'Created with Unconstrained Delegation enabled' -Success $true
     }
     catch {
-        Write-VulnResult -Name 'WEB01$' -Detail "Failed: $($_.Exception.Message)" -Success $false
-        Write-VulnStatus -Message "Error creating WEB01$: $($_.Exception.Message)" -Type Error
+        Write-VulnResult -Name 'WEB01`$' -Detail "Failed: $($_.Exception.Message)" -Success $false
+        Write-VulnStatus -Message "Error creating WEB01`$: $($_.Exception.Message)" -Type Error
     }
 
     # ── Scenario 2: Constrained Delegation (Service Account) ─────────────────
@@ -175,7 +175,7 @@ function Deploy-Delegation {
         Scenario       = 'Kerberos Delegation Abuse'
         Description    = @(
             'This scenario deploys three types of Kerberos delegation misconfigurations:',
-            '(1) Unconstrained delegation on WEB01$ allows credential interception of any',
+            '(1) Unconstrained delegation on WEB01`$ allows credential interception of any',
             'authenticating user. (2) Constrained delegation on svc_http permits impersonation',
             'to CIFS/HTTP on the DC via S4U2Proxy. (3) Protocol transition on svc_transfer',
             'enables S4U2Self + S4U2Proxy to impersonate any user to LDAP on the DC without',
@@ -191,7 +191,7 @@ function Deploy-Delegation {
             "Get-DomainComputer -Unconstrained | Select-Object dnshostname, samaccountname",
             "Get-DomainUser -TrustedToAuth | Select-Object samaccountname, msds-allowedtodelegateto",
             "",
-            "# ── Unconstrained Delegation (WEB01$) ──",
+            "# ── Unconstrained Delegation (WEB01`$) ──",
             "# Monitor for incoming TGTs on compromised WEB01",
             "Rubeus.exe monitor /interval:5 /nowrap",
             "",
@@ -209,7 +209,7 @@ function Deploy-Delegation {
             "impacket-getST $Domain/svc_transfer:<password> -spn LDAP/$dcHostname -impersonate administrator -dc-ip <DC_IP>"
         )
         AttackPath     = @(
-            "Unconstrained:  Coerce DC auth -> WEB01$ captures TGT -> Pass-the-Ticket -> DA",
+            "Unconstrained:  Coerce DC auth -> WEB01`$ captures TGT -> Pass-the-Ticket -> DA",
             "Constrained:    svc_http creds -> S4U2Proxy -> CIFS/HTTP ticket as admin on DC",
             "Proto Trans:    svc_transfer creds -> S4U2Self+S4U2Proxy -> LDAP as admin on DC"
         ) -join "`n"
@@ -224,7 +224,7 @@ function Remove-Delegation {
         Removes all Delegation scenario objects from Active Directory.
 
     .DESCRIPTION
-        Deletes the computer object WEB01$ and service accounts svc_http, svc_transfer.
+        Deletes the computer object WEB01`$ and service accounts svc_http, svc_transfer.
     #>
     [CmdletBinding()]
     param()
@@ -235,14 +235,14 @@ function Remove-Delegation {
     try {
         $computer = Get-ADComputer -Identity 'WEB01' -ErrorAction Stop
         Remove-ADComputer -Identity $computer -Confirm:$false
-        Write-VulnResult -Name 'WEB01$' -Detail 'Computer removed' -Success $true
+        Write-VulnResult -Name 'WEB01`$' -Detail 'Computer removed' -Success $true
     }
     catch [Microsoft.ActiveDirectory.Management.ADIdentityNotFoundException] {
-        Write-VulnResult -Name 'WEB01$' -Detail 'Not found (already removed)' -Success $true
+        Write-VulnResult -Name 'WEB01`$' -Detail 'Not found (already removed)' -Success $true
     }
     catch {
-        Write-VulnResult -Name 'WEB01$' -Detail "Removal failed: $($_.Exception.Message)" -Success $false
-        Write-VulnStatus -Message "Error removing WEB01$: $($_.Exception.Message)" -Type Error
+        Write-VulnResult -Name 'WEB01`$' -Detail "Removal failed: $($_.Exception.Message)" -Success $false
+        Write-VulnStatus -Message "Error removing WEB01`$: $($_.Exception.Message)" -Type Error
     }
 
     # Remove service accounts
@@ -271,7 +271,7 @@ function Test-Delegation {
         Validates that the Delegation scenario is correctly deployed.
 
     .DESCRIPTION
-        Checks that WEB01$ has unconstrained delegation, svc_http has constrained delegation,
+        Checks that WEB01`$ has unconstrained delegation, svc_http has constrained delegation,
         and svc_transfer has protocol transition configured.
 
     .PARAMETER Domain
@@ -287,14 +287,14 @@ function Test-Delegation {
 
     $allPassed = $true
 
-    # Test 1: WEB01$ - Unconstrained Delegation
+    # Test 1: WEB01`$ - Unconstrained Delegation
     try {
         $computer = Get-ADComputer -Identity 'WEB01' -Properties TrustedForDelegation -ErrorAction Stop
         if ($computer.TrustedForDelegation -eq $true) {
-            Write-VulnResult -Name 'WEB01$' -Detail 'Unconstrained delegation is ENABLED' -Success $true
+            Write-VulnResult -Name 'WEB01`$' -Detail 'Unconstrained delegation is ENABLED' -Success $true
         }
         else {
-            Write-VulnResult -Name 'WEB01$' -Detail 'Unconstrained delegation is DISABLED' -Success $false
+            Write-VulnResult -Name 'WEB01`$' -Detail 'Unconstrained delegation is DISABLED' -Success $false
             $allPassed = $false
         }
     }

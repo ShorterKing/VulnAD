@@ -1,0 +1,14 @@
+{
+  "name": "PNPT Practical Network Pentester Preset",
+  "description": "Scenarios matching TCM Security Practical Network Penetration Tester (PNPT) exam scope",
+  "scenarios": [
+    "Kerberoasting",
+    "ASREPRoast",
+    "PasswordSpraying",
+    "GPPPasswords",
+    "ACLAbuse",
+    "DCSync",
+    "MachineQuota",
+    "RBCD"
+  ]
+}

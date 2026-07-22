@@ -7,20 +7,16 @@
 
 .DESCRIPTION
     Deploys intentionally vulnerable Active Directory configurations on a single
-    Domain Controller for penetration testing practice. Supports 14 attack
-    scenarios covering Kerberoasting, AS-REP Roasting, ACL abuse chains,
-    delegation attacks, AD CS abuse, GPO abuse, LAPS misconfiguration, DCSync,
-    Shadow Credentials, RBCD, password exposure, group nesting privilege
-    escalation, AdminSDHolder persistence, and DNS Admins abuse.
+    Domain Controller for penetration testing practice. Supports 30 attack
+    scenarios covering credential attacks, privilege escalation, built-in operator
+    abuse, infrastructure misconfigurations, and persistence mechanisms.
 
     All objects are created inside a dedicated "ADMonolith" Organizational Unit
     and can be fully removed with the -Cleanup switch.
 
 .PARAMETER Scenario
-    One or more scenario names to deploy. Valid values:
-    Kerberoasting, ASREPRoast, ACLAbuse, Delegation, ADCS, GPOAbuse, LAPS,
-    DCSync, ShadowCreds, RBCD, PasswordExposure, GroupNesting, AdminSDHolder,
-    DNSAdmins
+    One or more scenario names to deploy. Supports 30 attack scenarios.
+    Use 'All' to deploy all 30 scenarios.
 
 .PARAMETER Difficulty
     Difficulty level affecting password complexity and misconfiguration subtlety.
@@ -33,7 +29,8 @@
     CRTP      — Scenarios common in CRTP exam prep
     CRTO      — Scenarios common in CRTO exam prep
     OSCP      — AD-focused scenarios for OSCP
-    RealWorld — Realistic enterprise misconfiguration set
+    PNPT      — Practical Network Penetration Tester preset
+    RealWorld — Full 30-scenario enterprise misconfiguration set
 
 .PARAMETER Force
     Skip confirmation prompts (non-interactive mode).
@@ -93,9 +90,11 @@
 param(
     [Parameter(ParameterSetName = 'Deploy')]
     [ValidateSet(
-        'All', 'Kerberoasting', 'ASREPRoast', 'ACLAbuse', 'Delegation', 'ADCS',
-        'GPOAbuse', 'LAPS', 'DCSync', 'ShadowCreds', 'RBCD',
-        'PasswordExposure', 'GroupNesting', 'AdminSDHolder', 'DNSAdmins'
+        'All', 'Kerberoasting', 'ASREPRoast', 'PasswordExposure', 'PasswordSpraying', 'GPPPasswords', 'WriteSPN',
+        'ACLAbuse', 'GroupNesting', 'Delegation', 'RBCD', 'DCSync', 'gMSA',
+        'BackupOperators', 'ServerOperators', 'AccountOperators', 'PrintOperators', 'DNSAdmins',
+        'ADCS', 'GPOAbuse', 'LAPS', 'ShadowCreds', 'ADIDNS', 'MachineQuota',
+        'AdminSDHolder', 'CoercionSetup', 'NTLMDowngrade', 'DPAPIExposure', 'PreWin2000', 'ServiceAbuse', 'ScheduledTask'
     )]
     [string[]]$Scenario,
 
@@ -106,7 +105,7 @@ param(
     [string]$Difficulty,
 
     [Parameter(ParameterSetName = 'Preset')]
-    [ValidateSet('CRTP', 'CRTO', 'OSCP', 'RealWorld')]
+    [ValidateSet('CRTP', 'CRTO', 'OSCP', 'PNPT', 'RealWorld')]
     [string]$Preset,
 
     [Parameter(ParameterSetName = 'Deploy')]
@@ -149,35 +148,54 @@ foreach ($moduleFile in $moduleFiles) {
 
 # All available scenario keys (order matters for display)
 $AllScenarioKeys = @(
-    'Kerberoasting', 'ASREPRoast', 'ACLAbuse', 'Delegation', 'ADCS',
-    'GPOAbuse', 'LAPS', 'DCSync', 'ShadowCreds', 'RBCD',
-    'PasswordExposure', 'GroupNesting', 'AdminSDHolder', 'DNSAdmins'
+    'Kerberoasting', 'ASREPRoast', 'PasswordExposure', 'PasswordSpraying', 'GPPPasswords', 'WriteSPN',
+    'ACLAbuse', 'GroupNesting', 'Delegation', 'RBCD', 'DCSync', 'gMSA',
+    'BackupOperators', 'ServerOperators', 'AccountOperators', 'PrintOperators', 'DNSAdmins',
+    'ADCS', 'GPOAbuse', 'LAPS', 'ShadowCreds', 'ADIDNS', 'MachineQuota',
+    'AdminSDHolder', 'CoercionSetup', 'NTLMDowngrade', 'DPAPIExposure', 'PreWin2000', 'ServiceAbuse', 'ScheduledTask'
 )
 
 # Preset definitions
 $Presets = @{
-    CRTP      = @('Kerberoasting', 'ASREPRoast', 'ACLAbuse', 'Delegation', 'DCSync', 'GroupNesting', 'LAPS')
-    CRTO      = @('Kerberoasting', 'ASREPRoast', 'ACLAbuse', 'Delegation', 'ADCS', 'DCSync', 'RBCD', 'ShadowCreds', 'GPOAbuse')
-    OSCP      = @('Kerberoasting', 'ASREPRoast', 'ACLAbuse', 'Delegation', 'DCSync', 'GroupNesting', 'PasswordExposure', 'LAPS')
-    RealWorld = @('Kerberoasting', 'ASREPRoast', 'ACLAbuse', 'Delegation', 'ADCS', 'DCSync', 'RBCD', 'ShadowCreds', 'GPOAbuse', 'PasswordExposure')
+    CRTP      = @('Kerberoasting', 'ASREPRoast', 'ACLAbuse', 'Delegation', 'DCSync', 'GroupNesting', 'LAPS', 'BackupOperators', 'gMSA', 'PasswordSpraying')
+    CRTO      = @('Kerberoasting', 'ASREPRoast', 'ACLAbuse', 'Delegation', 'ADCS', 'DCSync', 'RBCD', 'ShadowCreds', 'GPOAbuse', 'BackupOperators', 'ServerOperators', 'CoercionSetup', 'GPPPasswords', 'MachineQuota')
+    OSCP      = @('Kerberoasting', 'ASREPRoast', 'ACLAbuse', 'Delegation', 'DCSync', 'GroupNesting', 'PasswordExposure', 'LAPS', 'PasswordSpraying', 'GPPPasswords', 'MachineQuota')
+    PNPT      = @('Kerberoasting', 'ASREPRoast', 'PasswordSpraying', 'GPPPasswords', 'ACLAbuse', 'DCSync', 'MachineQuota', 'RBCD')
+    RealWorld = $AllScenarioKeys
 }
 
 # Map scenario keys to Deploy/Remove/Test function names
 $ScenarioFunctions = @{
     Kerberoasting    = @{ Deploy = 'Deploy-Kerberoasting';    Remove = 'Remove-Kerberoasting';    Test = 'Test-Kerberoasting' }
     ASREPRoast       = @{ Deploy = 'Deploy-ASREPRoast';       Remove = 'Remove-ASREPRoast';       Test = 'Test-ASREPRoast' }
+    PasswordExposure = @{ Deploy = 'Deploy-PasswordExposure'; Remove = 'Remove-PasswordExposure'; Test = 'Test-PasswordExposure' }
+    PasswordSpraying = @{ Deploy = 'Deploy-PasswordSpraying'; Remove = 'Remove-PasswordSpraying'; Test = 'Test-PasswordSpraying' }
+    GPPPasswords     = @{ Deploy = 'Deploy-GPPPasswords';     Remove = 'Remove-GPPPasswords';     Test = 'Test-GPPPasswords' }
+    WriteSPN         = @{ Deploy = 'Deploy-WriteSPN';         Remove = 'Remove-WriteSPN';         Test = 'Test-WriteSPN' }
     ACLAbuse         = @{ Deploy = 'Deploy-ACLAbuse';         Remove = 'Remove-ACLAbuse';         Test = 'Test-ACLAbuse' }
+    GroupNesting     = @{ Deploy = 'Deploy-GroupNesting';      Remove = 'Remove-GroupNesting';      Test = 'Test-GroupNesting' }
     Delegation       = @{ Deploy = 'Deploy-Delegation';       Remove = 'Remove-Delegation';       Test = 'Test-Delegation' }
+    RBCD             = @{ Deploy = 'Deploy-RBCD';             Remove = 'Remove-RBCD';             Test = 'Test-RBCD' }
+    DCSync           = @{ Deploy = 'Deploy-DCSync';           Remove = 'Remove-DCSync';           Test = 'Test-DCSync' }
+    gMSA             = @{ Deploy = 'Deploy-gMSA';             Remove = 'Remove-gMSA';             Test = 'Test-gMSA' }
+    BackupOperators  = @{ Deploy = 'Deploy-BackupOperators';  Remove = 'Remove-BackupOperators';  Test = 'Test-BackupOperators' }
+    ServerOperators  = @{ Deploy = 'Deploy-ServerOperators';  Remove = 'Remove-ServerOperators';  Test = 'Test-ServerOperators' }
+    AccountOperators = @{ Deploy = 'Deploy-AccountOperators'; Remove = 'Remove-AccountOperators'; Test = 'Test-AccountOperators' }
+    PrintOperators   = @{ Deploy = 'Deploy-PrintOperators';   Remove = 'Remove-PrintOperators';   Test = 'Test-PrintOperators' }
+    DNSAdmins        = @{ Deploy = 'Deploy-DNSAdmins';        Remove = 'Remove-DNSAdmins';        Test = 'Test-DNSAdmins' }
     ADCS             = @{ Deploy = 'Deploy-ADCS';             Remove = 'Remove-ADCS';             Test = 'Test-ADCS' }
     GPOAbuse         = @{ Deploy = 'Deploy-GPOAbuse';         Remove = 'Remove-GPOAbuse';         Test = 'Test-GPOAbuse' }
     LAPS             = @{ Deploy = 'Deploy-LAPS';             Remove = 'Remove-LAPS';             Test = 'Test-LAPS' }
-    DCSync           = @{ Deploy = 'Deploy-DCSync';           Remove = 'Remove-DCSync';           Test = 'Test-DCSync' }
     ShadowCreds      = @{ Deploy = 'Deploy-ShadowCreds';      Remove = 'Remove-ShadowCreds';      Test = 'Test-ShadowCreds' }
-    RBCD             = @{ Deploy = 'Deploy-RBCD';             Remove = 'Remove-RBCD';             Test = 'Test-RBCD' }
-    PasswordExposure = @{ Deploy = 'Deploy-PasswordExposure'; Remove = 'Remove-PasswordExposure'; Test = 'Test-PasswordExposure' }
-    GroupNesting     = @{ Deploy = 'Deploy-GroupNesting';      Remove = 'Remove-GroupNesting';      Test = 'Test-GroupNesting' }
+    ADIDNS           = @{ Deploy = 'Deploy-ADIDNS';           Remove = 'Remove-ADIDNS';           Test = 'Test-ADIDNS' }
+    MachineQuota     = @{ Deploy = 'Deploy-MachineQuota';     Remove = 'Remove-MachineQuota';     Test = 'Test-MachineQuota' }
     AdminSDHolder    = @{ Deploy = 'Deploy-AdminSDHolder';    Remove = 'Remove-AdminSDHolder';    Test = 'Test-AdminSDHolder' }
-    DNSAdmins        = @{ Deploy = 'Deploy-DNSAdmins';        Remove = 'Remove-DNSAdmins';        Test = 'Test-DNSAdmins' }
+    CoercionSetup    = @{ Deploy = 'Deploy-CoercionSetup';    Remove = 'Remove-CoercionSetup';    Test = 'Test-CoercionSetup' }
+    NTLMDowngrade    = @{ Deploy = 'Deploy-NTLMDowngrade';    Remove = 'Remove-NTLMDowngrade';    Test = 'Test-NTLMDowngrade' }
+    DPAPIExposure    = @{ Deploy = 'Deploy-DPAPIExposure';    Remove = 'Remove-DPAPIExposure';    Test = 'Test-DPAPIExposure' }
+    PreWin2000       = @{ Deploy = 'Deploy-PreWin2000';       Remove = 'Remove-PreWin2000';       Test = 'Test-PreWin2000' }
+    ServiceAbuse     = @{ Deploy = 'Deploy-ServiceAbuse';     Remove = 'Remove-ServiceAbuse';     Test = 'Test-ServiceAbuse' }
+    ScheduledTask    = @{ Deploy = 'Deploy-ScheduledTaskAbuse'; Remove = 'Remove-ScheduledTaskAbuse'; Test = 'Test-ScheduledTaskAbuse' }
 }
 
 # ═══════════════════════════════════════════════════════════

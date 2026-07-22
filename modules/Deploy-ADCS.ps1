@@ -332,17 +332,7 @@ function Deploy-ADCS {
 
     return @{
         Scenario       = 'AD CS Abuse (ESC1/ESC2/ESC4)'
-        Description    = @(
-            'This scenario creates three vulnerable certificate templates that enable AD CS',
-            'privilege escalation. ESC1 allows enrollees to specify any Subject Alternative Name',
-            'with Client Auth EKU, enabling authentication as any domain user including Domain Admin.',
-            'ESC2 uses the Any Purpose EKU which makes certificates valid for all uses including',
-            'client authentication. ESC4 grants WriteDACL to a low-privileged user on a template',
-            'object, allowing them to modify it into an ESC1-vulnerable template.',
-            if (-not $adcsStatus.Available) {
-                'WARNING: AD CS was not detected. Templates were created in AD but cannot be used until a CA is installed.'
-            }
-        ) -join ' '
+        Description    = 'This scenario creates three vulnerable certificate templates enabling AD CS privilege escalation (ESC1/ESC2/ESC4).'
         CreatedObjects = $createdObjects.ToArray()
         AttackCommands = @(
             "# ── Enumeration ──",
